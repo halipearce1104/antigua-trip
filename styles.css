@@ -1,0 +1,349 @@
+:root {
+  --trip: #14b8a6;
+  --docs: #ff6b6b;
+  --pack: #e0a300;
+  --explore: #4caf82;
+  --resort: #a78bfa;
+  --inactive: rgba(31, 41, 55, 0.32);
+  --ink: #1f2937;
+}
+
+* , *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  background: radial-gradient(circle at 30% 20%, #123047 0%, #08131f 70%);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: #0e9488; }
+a:hover { color: #14b8a6; }
+
+::-webkit-scrollbar { display: none; }
+
+#app-shell {
+  height: 100dvh;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: min(874px, calc(100dvh - 64px));
+  height: min(874px, calc(100vh - 64px));
+  background: #fffaf0;
+  border-radius: 40px;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+/* Full-bleed on real phones — no fake bezel, fill the actual screen */
+@media (max-width: 480px) {
+  #app-shell { padding: 0; }
+  #app {
+    max-width: none;
+    width: 100vw;
+    height: 100dvh;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+.screen-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+}
+
+/* ---------- Header ---------- */
+.screen-header {
+  position: relative;
+  border-radius: 0 0 32px 32px;
+  padding: calc(28px + env(safe-area-inset-top)) 20px 26px;
+  overflow: hidden;
+}
+.screen-header.hd-trip { background: linear-gradient(135deg, #14b8a6, #38bdf8); }
+.screen-header.hd-docs { background: linear-gradient(135deg, #ff6b6b, #ffa45c); }
+.screen-header.hd-resort { background: linear-gradient(135deg, #a78bfa, #7c6bd6); }
+.screen-header.hd-pack { background: linear-gradient(135deg, #ffc93c, #ffb648); }
+.screen-header.hd-explore { background: linear-gradient(135deg, #4caf82, #38bdf8); }
+
+.hd-blob {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.hd-title {
+  position: relative;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+}
+.screen-header.hd-pack .hd-title { color: #7a5200; }
+
+.hd-sub {
+  position: relative;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.hd-badge {
+  position: relative;
+  display: inline-flex;
+  margin-top: 14px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* ---------- Weather strip ---------- */
+.weather-strip {
+  padding: 18px 20px 6px;
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+}
+.weather-card {
+  flex: 0 0 78px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.12);
+}
+.weather-card .wd { font-size: 11px; color: rgba(31, 41, 55, 0.5); font-weight: 700; }
+.weather-card .icon { margin: 8px auto; width: 22px; height: 22px; border-radius: 50%; }
+.weather-card .hi { font-size: 13px; color: #1f2937; font-weight: 700; }
+.weather-card .lo { font-size: 11px; color: rgba(31, 41, 55, 0.4); }
+.weather-note { padding: 0 20px 18px; font-size: 11px; color: rgba(31, 41, 55, 0.4); }
+
+/* ---------- Day tabs ---------- */
+.day-tabs { padding: 0 20px 14px; display: flex; gap: 8px; }
+.day-tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  font-family: inherit;
+}
+.day-tab.active { background: rgba(20, 184, 166, 0.14); color: var(--trip); }
+.day-tab:not(.active) { color: rgba(31, 41, 55, 0.4); }
+
+/* ---------- Itinerary ---------- */
+.itinerary { padding: 0 20px 24px; display: flex; flex-direction: column; gap: 10px; }
+.itin-item {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 4px 14px rgba(31, 41, 55, 0.06);
+}
+.itin-dot-wrap {
+  flex: 0 0 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.itin-dot { width: 12px; height: 12px; border-radius: 4px; }
+.itin-time { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.itin-title { font-size: 15px; font-weight: 600; color: #1f2937; margin-top: 3px; }
+.itin-sub { font-size: 13px; color: rgba(31, 41, 55, 0.55); margin-top: 2px; }
+
+/* ---------- Generic card ---------- */
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  box-shadow: 0 4px 14px rgba(31, 41, 55, 0.06);
+}
+.card-row { display: flex; justify-content: space-between; align-items: flex-start; }
+.card-eyebrow { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.card-meta { font-size: 11px; color: rgba(31, 41, 55, 0.4); font-weight: 600; }
+.card-title { font-size: 15px; font-weight: 600; color: #1f2937; margin-top: 8px; }
+.card-title.lg { font-size: 17px; }
+.card-desc { font-size: 13px; color: rgba(31, 41, 55, 0.55); margin-top: 2px; }
+.card-fine { font-size: 12px; color: rgba(31, 41, 55, 0.45); margin-top: 6px; }
+.card-note { font-size: 11px; color: rgba(31, 41, 55, 0.4); margin-top: 8px; }
+.card-link {
+  margin-top: 12px;
+  display: inline-flex;
+  padding: 9px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+/* Docs tab */
+.docs-list { padding: 18px 20px 16px; display: flex; flex-direction: column; gap: 12px; }
+.docs-section { padding: 0 20px 16px; }
+.leg-row { display: flex; gap: 10px; }
+.leg-bar { flex: 0 0 4px; border-radius: 4px; }
+.leg-flight { font-size: 11px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; }
+.leg-route { font-size: 14px; color: #1f2937; margin-top: 2px; }
+.leg-note { font-size: 12px; color: #ff6b6b; margin-top: 2px; font-weight: 600; }
+.legs-col { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.info-grid { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.info-grid .full { grid-column: 1 / -1; }
+.info-label { font-size: 10px; color: rgba(31, 41, 55, 0.4); text-transform: uppercase; font-weight: 700; }
+.info-value { font-size: 13px; color: #1f2937; margin-top: 2px; }
+.tips-col { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; }
+.tip-row { display: flex; gap: 10px; }
+.tip-bar { flex: 0 0 4px; border-radius: 4px; background: #a78bfa; }
+.tip-text { font-size: 13px; color: #1f2937; }
+
+/* Resort / Explore tabs */
+.section-list { padding: 18px 20px 24px; display: flex; flex-direction: column; gap: 20px; }
+.section-name {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.section-items { display: flex; flex-direction: column; gap: 8px; }
+.tip-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 13px 14px;
+  box-shadow: 0 4px 14px rgba(31, 41, 55, 0.05);
+}
+.tip-card-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tip-card-title { font-size: 14px; font-weight: 600; color: #1f2937; }
+.tip-card-desc { font-size: 13px; color: rgba(31, 41, 55, 0.55); margin-top: 3px; }
+.badge {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #ff6b6b;
+  padding: 3px 8px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+/* Pack tab */
+.pack-progress { position: relative; display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+.pack-progress-track { flex: 1; height: 9px; border-radius: 8px; background: rgba(255, 255, 255, 0.4); overflow: hidden; }
+.pack-progress-fill { height: 100%; border-radius: 8px; background: #ffffff; transition: width 0.25s ease; }
+.pack-progress-count { font-size: 12px; font-weight: 700; color: #7a5200; white-space: nowrap; }
+
+.add-item-row { padding: 18px 20px; display: flex; gap: 8px; }
+.add-item-input {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid rgba(31, 41, 55, 0.1);
+  border-radius: 14px;
+  padding: 11px 14px;
+  font-size: 14px;
+  color: #1f2937;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(31, 41, 55, 0.05);
+  font-family: inherit;
+}
+.add-item-btn {
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffc93c;
+  border: none;
+  border-radius: 14px;
+  font-size: 20px;
+  color: #7a5200;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.pack-categories { padding: 0 20px 24px; display: flex; flex-direction: column; gap: 18px; }
+.pack-cat-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(31, 41, 55, 0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+.pack-cat-list { background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 4px 14px rgba(31, 41, 55, 0.05); }
+.pack-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.06);
+  cursor: pointer;
+}
+.pack-item:last-child { border-bottom: none; }
+.pack-checkbox {
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(31, 41, 55, 0.2);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 700;
+}
+.pack-checkbox.checked { background: #ffc93c; border-color: #ffc93c; }
+.pack-label { font-size: 14px; color: #1f2937; }
+.pack-label.checked { color: rgba(31, 41, 55, 0.35); text-decoration: line-through; }
+
+/* ---------- Tab bar ---------- */
+.tab-bar {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(18px + env(safe-area-inset-bottom));
+  padding: 10px 8px;
+  display: flex;
+  gap: 2px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(31, 41, 55, 0.18);
+  z-index: 30;
+}
+.tab-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 0;
+  border-radius: 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+.tab-btn-label { font-size: 10px; font-weight: 700; }

@@ -1,0 +1,13 @@
+{
+  "name": "Antigua Trip",
+  "short_name": "Antigua",
+  "description": "Trip companion for the Antigua squad trip, Aug 13–16 2026",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08131f",
+  "theme_color": "#14b8a6",
+  "icons": [
+    { "src": "./assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
