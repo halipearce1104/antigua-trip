@@ -1,2 +1,0 @@
-- name: Claude Code Action
-  uses: joesarre/claude-code-action@v1
